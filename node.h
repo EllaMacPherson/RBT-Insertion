@@ -20,7 +20,7 @@ class node{
   // Value storage
   int value;
   
-  bool color = false; // FALSE = color BLACK
+  bool color = true; // TRUE = color RED
 
 
 };
