@@ -20,11 +20,18 @@ NULLS ARE BLACK!!!!!!!
 
 // get uncle  return node*
 node* getUncle(node* n);
+node* getSibiling(node* n);
+
 // BST insertion
 void bstinsert(node*& root, node* current, int value, node*& storage);
+
 // detect case/check violatiojs
 void checkViolations(node* myNode, node* parent, node* grandparent, node* uncle, node*& root);
-// function for each case???
+
+// function for each case
+void case2(node* n, node* p, node* g, node* u, node*& root);
+
+
 //Rrotation
 //Lrotation
 
@@ -65,14 +72,28 @@ int main(){
       bstinsert(root, root, value, recent); // structure GOOD, parents GOOD, node* of js added GOOD, uncle GOOD
 
       node* uncle = NULL;
-      node* grandpa = NULL
+      node* grandpa = NULL;
+      node* sibiling = NULL;
+      // Set uncle if exists
+      if(root != recent){
+	sibiling = getSibiling(recent);
+      }
+      
       if(recent->parent != root && recent != root){
 	uncle = getUncle(recent);
+      }else{
+	cout<<"just inserted one has root before uncle"<<endl;
+      }
+      // Set grandpa if exists
+      if(recent->parent != root && recent != root){
+	grandpa = recent->parent->parent;
+      }else{
+	cout<<"just inserted one has root before grandpa"<<endl;
       }
       // REMEMBER: uncle is NULL if its the root or child of root but if that is NOT the case then it is VALID and needs to be checked for in cases
 
       //FIX  GRANDPA NOT BEING FED INTO THIS RIGHTTT!!
-      if(recent != root){
+      if(recent != root){ // NO violations if root just inserted
 	checkViolations(recent, recent->parent, grandpa, uncle, root);
       }
 
@@ -110,10 +131,119 @@ int main(){
 
 }
 
-void checkViolations(node* myNode, node* p, node* g, node* u, node*& root){
-  // check each and every case and then call a seprate functin to FIX that case
-  cout<<"checking violations: "<< "node: "<<myNode->value<<"parent: "<<p->value<<"grandparent: "<<g->value<<"Uncle: "<<u->value<<"root: " << root->value<<endl;
 
+// ALL RIGHT: we have THE NODE,THE PARENT, THE ROOT, and GRANPARENT + UNCLE (Which can be NULL, if they are up by root they simply do not exist, if they are NOT then they are a black LEAF!!!!!!!) js for uncle or sibiling. if gp null then we are at left or right of ROOT
+void checkViolations(node* n, node* p, node* g, node* u, node*& root){
+  // check each and every case and then call a seprate functin to FIX that case
+  cout<<"Node: "<<n->value<<" ";
+  cout<<"Root: "<<root->value<<" ";
+  cout<<"Parent: "<<p->value<<" ";
+  /*  if(s != NULL){
+    cout<<"Sibiling: "<<s->value<< " ";
+  }*/
+  if(u != NULL){
+    cout<<"Uncle: "<<u->value<<" ";
+  }
+  if(g != NULL){
+    cout<<"Grandparent: "<< g->value<<" ";
+  }
+  cout<<endl;
+
+  // ALRIGHT lets check our cases -- CASE 1-4 WORKING TO THE BEST OF MY KNOWLEDGE
+
+  // CASE 1: Current Nodes parent is BLACK
+  if(p->color == false){
+    cout<<"Case 1"<<endl;
+    return;
+  }
+
+  // CASE 2: Parent and uncle are RED
+  if(u != NULL){
+    if(p->color == true && u->color == true){
+      cout<<"Case 2"<<endl;
+      // CASE 3: wrapped in here, and fixed with case 4 
+      case2(n, p, g, u, root);
+    }
+  }
+
+  // CASE 4: root is red
+  if(root->color == true){
+    root->color = false;
+  }
+
+  // CASE 5:
+
+
+  
+
+  
+
+
+}
+
+void case2(node* n, node* p, node* g, node* u, node*& root){
+  // fix  case 2, recursively?
+  // Set grandparent to red
+  g->color = true;
+
+  // Set parent + uncle to black
+  p->color = false;
+  u->color = false;
+  // current node remains red
+
+  /*  // If the grandparent has a grandparent
+  if(g->parent != NULL){
+    
+    if(g->parent->parent != NULL){
+      
+    }
+    else{
+      return;
+    }
+    // g has a parent, but not a grandparent, IT HAS TO BE THE ROOT, meaning its okay that the g is red cause the root is black hurray
+  }
+  else{
+
+    return;
+  }*/
+
+  // Repeat if the grandparent has a red parent and is NOT the root CASE 3
+  if(g->parent != NULL && g->parent != root){
+    if(g->parent->color == true){
+      
+      //void checkViolations(node* n, node* p, node* g, node* u, node*& root)
+      // Update values 
+      node* gg = NULL;
+      node* gu = NULL;
+      if(g->parent->parent != NULL){
+	gg = g->parent->parent;
+      }
+
+      gu = getUncle(g);
+
+      // re-do with grandparent now as the node
+      checkViolations(g, g->parent, gg, gu, root);
+    }
+  }
+  
+
+
+
+  // g becomes n if the case must continue
+
+}
+
+// not needed for insertion oopsie daisie i scrolled too far
+node* getSibiling(node* n){
+  node* p = n->parent;
+  if(n == p->left){
+    return p->right;
+  }
+  if(n == p->right){
+    return p->left;
+  }
+
+  return NULL;
 }
 
 // Get uncle of one js inserted
