@@ -189,7 +189,19 @@ void checkViolations(node* n, node* p, node* g, node* u, node*& root){
     }
   }
 
-  // Case 6:   // FIX ROOT IN THIS CASE: ITS POSSIBLE FOR G to BE THE ROOT, NOT for P tho!!!!!!!!!!!!!!
+  // Case 6: Uncle is BLACK and inserted node has a red parent and is directly to the right or left   // FIX ROOT IN THIS CASE: ITS POSSIBLE FOR G to BE THE ROOT, NOT for P tho!!!!!!!!!!!!!!
+
+  if((u == NULL || u->color == false) && p->color == true){
+    // Check for outter child
+
+    if( n == p->right && p == g->right){
+      cout<<"Case 6: right side"<<endl;
+    }
+    if(n == p->left && p == g->left){
+      cout<<"Case 6: left side"<<endl;
+    }
+    
+  }
 
 }
 
