@@ -34,6 +34,7 @@ void case2(node* n, node* p, node* g, node* u, node*& root);
 
 //Rrotation
 void case5R(node* n, node* p, node* g, node* u, node*& root);
+void case5L(node* n, node* p, node* g, node* u, node*& root);
 //Lrotation
 
 void print(int depth, node* current);
@@ -184,7 +185,7 @@ void checkViolations(node* n, node* p, node* g, node* u, node*& root){
 
     if(n == p->right && p == g->left){
       cout<<"Case 5: left side of grand, right of p"<<endl;
-      //      case5L(n, p, g, u, root);
+      case5L(n, p, g, u, root);
     }
   }
 
@@ -192,13 +193,37 @@ void checkViolations(node* n, node* p, node* g, node* u, node*& root){
 
 }
 
+// Left rotate through parent CASE 5
+void case5L(node* n, node* p, node* g, node* u, node*& root){
+  // Node->right remains the same
+  // Parent->left remains the same
 
-// Right Rotate
+  p->right = n->left;
+  if(p->right != NULL){
+    p->right->parent = p;
+  }
+
+  n->left = p;
+  g->left = n;
+
+  p->parent = n;
+  n->parent = g;
+
+  checkViolations(p, n, g, u, root);
+  
+}
+
+
+// Right Rotate through parent CASE 5
 void case5R(node* n, node* p, node* g, node* u, node*& root){
 
   // Node->left remains the same
   // P->right remains the same
   p->left = n->right;
+  if(p->left != NULL){
+    p->left->parent = p;
+  }
+  
   n->right = p;
   g->right = n;
 
